@@ -1,0 +1,155 @@
+.login_Div {
+    position: fixed;
+    width: 450px;
+    height: 400px;
+    padding: 5px;
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
+    border-radius: 5px;
+    background-color: #FFF;
+    box-shadow: 0 5px 12px rgba(15,27,39,.4);
+    transform: translateX(-50%) translateY(-50%);
+}
+.login_Div:before {
+    content: '';
+    -webkit-animation: loader-spin 4s infinite linear;
+    -o-animation: loader-spin 4s infinite linear;
+    animation: loader-spin 4s infinite linear;
+    height: 80px;
+    width: 80px;
+    margin: -40px;
+    border-radius: 50%;
+    border: dashed 2px #d8d8d8;
+    text-align: center;
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: -1;
+}
+.login_Div .close {
+    position: absolute;
+    right: -30px;
+    top: -35px;
+    color: #FFF;
+    font-size: 30px;
+    cursor: pointer;
+    opacity: 1;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+}
+.login_Div .close:hover {
+	opacity: .85;
+}
+@-webkit-keyframes loader-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+@-moz-keyframes loader-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+@-ms-keyframes loader-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+@keyframes loader-spin {
+    from {
+        -webkit-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg)
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+.mask_Div {
+	position: fixed;
+	overflow: hidden;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 999;
+	background: rgba(26,53,71,.85);
+}
+.quick-login .btn i {
+    width: auto;
+    height: auto;
+    font-size: 1em;
+    line-height: 1;
+    vertical-align: middle;
+    margin: 0 2px 2px 0;
+}
+.btn-wechat {
+    color: #FFF;
+    background-color: #2EB02F;
+}
+.btn-wechat:hover,
+.btn-wechat:focus {
+    color: rgba(255,255,255,.85);
+}
+.btn-qqbind {
+    color: #888;
+    background-color: #CCC;
+}
+.btn-qqbinds {
+    color: #FFF;
+    background-color: #26B8F2;
+}
+.btn-qqbinds:hover {
+    color: rgba(255,255,255,.85);
+}
+.btn-weibo {
+    color: #FFF;
+    background-color: #dc3246;
+}
+.btn-weibo:hover,
+.btn-weibo:focus {
+    color: #dc3246;
+    border-color: #dc3246;
+    background-color: #FFF;
+}
+@media only screen and (max-width: 768px) {
+	.login_Div {
+		width: 100%;
+		height: 100%;
+	}
+}

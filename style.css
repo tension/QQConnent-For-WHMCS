@@ -1,0 +1,92 @@
+* {
+    font-family: 'Helvetica Neue','Hiragino Sans GB','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei','Open Sans',sans-serif;
+}
+.panel-body {
+    padding: 10px;
+}
+.table {
+    color: #999;
+    text-align:center;
+    font-size:12px;
+}
+.table a, a:hover {
+    color: #00afd1;
+    text-decoration: none;
+}
+.table th {
+    background-color:#FCFCFC;
+    text-align:center;
+    font-weight:600;
+    font-size:10px;
+}
+.table > thead > tr > th {
+    border-bottom:1px solid #EAEAEA;
+    font-weight: bold;
+}
+.table > tbody > tr > td {
+    padding:10px;
+    border-left:1px solid #EAEAEA;
+    border-top:1px solid #EAEAEA;
+    vertical-align: middle;
+}
+.table td:first-child {
+    border-left:0;
+    border-left:0;
+}
+a.list-group-item .list-group-item-heading {
+    color: #777;
+}
+.list-group-item-text {
+    color: #999;
+}
+.label, .btn-xs {
+    font-family: 'Helvetica Neue','Hiragino Sans GB','Helvetica Neue','Hiragino Sans GB','Microsoft YaHei','Open Sans',sans-serif !important;
+    font-weight: bold !important;
+    padding: 3px 8px !important;
+    border-radius: 3px;
+    font-size: 10px !important;
+}
+.panel-heading > .badge {
+    float: right;
+}
+ul, li {
+    list-style: none;
+}
+@media only screen and (max-width: 768px) {
+    #unseen table td:nth-child(2),
+    #unseen table th:nth-child(2),
+    #unseen .autohide,
+    #unseens .autohide {
+        display: none;
+    }
+    #unseen table th,
+    #unseens table th {
+        border-top: 1px solid #EEE;
+    }
+}
+@media (max-width: 1200px) {
+    .table-responsive {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        -webkit-overflow-scrolling: touch;
+    }
+    .table-responsive > .table {
+        margin-bottom: 0;
+    }
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap;
+    }
+    #unseen .autohides {
+        display: none;
+    }
+    #unseen .autoset {
+        border-radius: 3px;
+    }
+}
