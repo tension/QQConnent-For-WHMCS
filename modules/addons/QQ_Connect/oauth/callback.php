@@ -27,15 +27,15 @@ $openID = Capsule::table('mod_qqconnect')->where('openid', $oid)->first();
 //print_r($openID['SELECT']['result']);die();
 
 if ( $openID ) {
+    
+    $uid = $openID->uid;
 	
 	// 更新内容到数据库
-	Capsule::table('mod_qqconnect')->update([
+	Capsule::table('mod_qqconnect')->where('uid', $uid)->update([
 		'nickname' 	=> $nikename,
 		'avatar'	=> $avatar,
 		'openid'	=> $oid,
 	]);
-    
-    $uid = $openID->uid;
     
     // 写入 SESSION UID
     $_SESSION['uid'] = $uid;
