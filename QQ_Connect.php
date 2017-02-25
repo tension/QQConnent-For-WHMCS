@@ -96,28 +96,27 @@ function QQ_Connect_output($vars) {
                             $logins = $setting->logins;
                             $logout = $setting->logout;
                         }
-                        $editor = "
-	<div class=\"panel-body\">
-            <form action=\"{$modulelink}\" method=\"post\">
-              <input type=\"hidden\" name=\"action\" value=\"submitedit\">
-              <div class=\"form-group\">
+                        $editor = '<div class="panel-body">
+            <form action="{$modulelink}" method="post">
+              <input type="hidden" name="action" value="submitedit">
+              <div class="form-group">
                 <label>登录页按钮</label>
-                <p style=\"font-size: 12px; color: #888;\">链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?login</code> <a style=\"color: #999;font-size: 12px;\" href=\"\">查看详情</a></p>
-                <textarea class=\"form-control\" rows=\"3\" name=\"login\">{$login}</textarea>
+                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?login</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
+                <textarea class="form-control" rows="3" name="login">{$login}</textarea>
               </div>
-              <div class=\"form-group\">
+              <div class="form-group">
                 <label>客户中心绑定按钮</label>
-                <p style=\"font-size: 12px; color: #888;\">链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style=\"color: #999;font-size: 12px;\" href=\"\">查看详情</a></p>
-                <textarea class=\"form-control\" rows=\"3\" name=\"logins\">{$logins}</textarea>
+                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
+                <textarea class="form-control" rows="3" name="logins">{$logins}</textarea>
               </div>
-              <div class=\"form-group\">
+              <div class="form-group">
                 <label>客户中心解除绑定</label>
-                <p style=\"font-size: 12px; color: #888;\">链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style=\"color: #999;font-size: 12px;\" href=\"\">查看详情</a></p>
-                <textarea class=\"form-control\" rows=\"3\" name=\"logout\">{$logout}</textarea>
+                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
+                <textarea class="form-control" rows="3" name="logout">{$logout}</textarea>
               </div>
-                <button type=\"submit\" class=\"btn btn-primary\">提交修改</button>
+                <button type="submit" class="btn btn-primary">提交修改</button>
             </form>
-        </div>";
+        </div>';
                         break;
                     case 'submitedit':
                         if (isset($_POST['login'], $_POST['logins'], $_POST['logout'])) {
