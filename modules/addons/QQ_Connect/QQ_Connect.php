@@ -96,7 +96,8 @@ function QQ_Connect_output($vars) {
                             $logins = $setting->logins;
                             $logout = $setting->logout;
                         }
-                        $editor = '<div class="panel-body">
+                        $editor = '
+        <div class="panel-body">
             <form action="'.$modulelink.'" method="post">
               <input type="hidden" name="action" value="submitedit">
               <div class="form-group">
@@ -131,19 +132,19 @@ function QQ_Connect_output($vars) {
 
                                 if ($check) {
 	                                $action = Capsule::table('mod_qqsetting')
-	                                ->insert(array(
+	                                ->insert([
 	                                	'login'		=> $login,
 	                                	'logins' 	=> $logins,
 	                                	'logout'	=> $logout,
-	                                ));
+	                                ]);
                                 } else {
 	                                
 	                                $action = Capsule::table('mod_qqsetting')
-	                                ->update(array(
+	                                ->update([
 	                                	'login'		=> $login,
 	                                	'logins' 	=> $logins,
 	                                	'logout'	=> $logout,
-	                                ));
+	                                ]);
                                 }
 
                                 if ($action) {
