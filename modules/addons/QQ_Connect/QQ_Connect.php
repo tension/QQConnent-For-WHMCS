@@ -102,17 +102,17 @@ function QQ_Connect_output($vars) {
               <div class="form-group">
                 <label>登录页按钮</label>
                 <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?login</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="login">{$login}</textarea>
+                <textarea class="form-control" rows="3" name="login">'.$login.'</textarea>
               </div>
               <div class="form-group">
                 <label>客户中心绑定按钮</label>
                 <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="logins">{$logins}</textarea>
+                <textarea class="form-control" rows="3" name="logins">'.$logins.'</textarea>
               </div>
               <div class="form-group">
                 <label>客户中心解除绑定</label>
                 <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="logout">{$logout}</textarea>
+                <textarea class="form-control" rows="3" name="logout">'.$logout.'</textarea>
               </div>
                 <button type="submit" class="btn btn-primary">提交修改</button>
             </form>
