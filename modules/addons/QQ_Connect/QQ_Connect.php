@@ -97,7 +97,7 @@ function QQ_Connect_output($vars) {
                             $logout = $setting->logout;
                         }
                         $editor = '<div class="panel-body">
-            <form action="{$modulelink}" method="post">
+            <form action="'.$modulelink.'" method="post">
               <input type="hidden" name="action" value="submitedit">
               <div class="form-group">
                 <label>登录页按钮</label>
