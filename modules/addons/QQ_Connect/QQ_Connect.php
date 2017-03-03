@@ -38,24 +38,13 @@ function QQ_Connect_activate() {
 			});
 		}
 		if (!Capsule::schema()->hasTable('mod_qqsetting')) {
+			
 			Capsule::schema()->create('mod_qqsetting', function ($table) {
 				$table->text('login');
 				$table->text('logins');
 				$table->text('logout');
-			});             
-			    
-            $login = "&lt;a href=\"javascript:QQ_login('login');\" class=\"btn btn-block btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; QQ&lt;/a&gt;";
-            
-            $logins = "&lt;a href=\"javascript:QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 绑定QQ&lt;/a&gt;";
-            
-            $logout = "&lt;a href=\"javascript:if(confirm('您确定取消 QQ 账号绑定吗？'))QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 解绑QQ&lt;/a&gt;";
-            
-	        Capsule::table('mod_qqsetting')
-	            ->insert([
-	            	'login'		=> $login,
-	            	'logins' 	=> $logins,
-	            	'logout'	=> $logout,
-	            ]);
+			});
+			
 		}
 	} catch (Exception $e) {
 		return [
@@ -92,115 +81,130 @@ function QQ_Connect_output($vars) {
 	$db = new NeWorld\Database;
     $systemurl = \WHMCS\Config\Setting::getValue('SystemURL');
     $modulelink = $vars['modulelink'];
-    $result = "<link rel=\"stylesheet\" href=\"{$systemurl}/modules/addons/QQ_Connect/style.css\">";
+    $result = '<link rel="stylesheet" href="'.$systemurl.'/modules/addons/QQ_Connect/style.css">';
     
-            if (isset($_POST['action'])) {
-                switch ($_POST['action']) {
-                    case 'edit':
-                    	$setting = Capsule::table('mod_qqsetting')->first();
-                        if ( $setting ) {
-                            $login 	= $setting->login;
-                            $logins = $setting->logins;
-                            $logout = $setting->logout;
-                        }
-                        $editor = '
-        <div class="panel-body">
-            <form action="'.$modulelink.'" method="post">
-              <input type="hidden" name="action" value="submitedit">
-              <div class="form-group">
-                <label>登录页按钮</label>
-                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?login</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="login">'.$login.'</textarea>
-              </div>
-              <div class="form-group">
-                <label>客户中心绑定按钮</label>
-                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="logins">'.$logins.'</textarea>
-              </div>
-              <div class="form-group">
-                <label>客户中心解除绑定</label>
-                <p>链接地址： <code>{$systemurl}/modules/addons/QQ_Connect/oauth/?bind</code> <a style="color: #999;font-size: 12px;" href="">查看详情</a></p>
-                <textarea class="form-control" rows="3" name="logout">'.$logout.'</textarea>
-              </div>
-                <button type="submit" class="btn btn-primary">提交修改</button>
-            </form>
-        </div>';
-                        break;
-                    case 'submitedit':
-                        if (isset($_POST['login'], $_POST['logins'], $_POST['logout'])) {
-                            if (empty($_POST['login']) || empty($_POST['logins']) || empty($_POST['logout'])) {
-                                $result .= error("修改按钮样式失败，不允许修改值为空。");
-                            } else {
-                                $login = html_entity_decode($_POST['login']);
-                                $logins = html_entity_decode($_POST['logins']);
-                                $logout = html_entity_decode($_POST['logout']);
-
-                                $action = Capsule::table('mod_qqsetting')
-		                                ->update([
-		                                	'login'		=> $login,
-		                                	'logins' 	=> $logins,
-		                                	'logout'	=> $logout,
-		                                ]);
-
-                                if ($action) {
-                                    $result .= success('修改按钮样式成功，请在模板文件 clientareahome.tpl 和 login.tpl 中合适的地方加入 <strong>{$qqlink}</strong>');
-                                } else {
-                                    $result .= error('数据库操作故障，这可能是由于按钮样式并未更改或修改失败，若修改失败、请重试。');
-                                }
-                            }
-                        } else {
-                            $result .= error('修改按钮样式失败，请重新提交尝试。');
-                        }
-                        break;
-                    default:
-                        break;
+    if (isset($_REQUEST['action'])) {
+        switch ($_REQUEST['action']) {
+            case 'init':
+            	$action = Capsule::table('mod_qqsetting')
+		            ->insert([
+		            	'login'		=> "&lt;a href=\"javascript:QQ_login('login');\" class=\"btn btn-block btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; QQ&lt;/a&gt;",
+		            	'logins' 	=> "&lt;a href=\"javascript:QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 绑定QQ&lt;/a&gt;",
+		            	'logout'	=> "&lt;a href=\"javascript:if(confirm('您确定取消 QQ 账号绑定吗？'))QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 解绑QQ&lt;/a&gt;",
+		            ]);
+		        if ( $action ) {
+                    $alert = success('初始化成功');
+                } else {
+                    $alert = error('初始化失败');
                 }
-            }
-            $count = Capsule::table('mod_qqconnect')->count();
-            if ($count == 0) {
-                $count = '暂无记录';
-            } else {
-                $count = "<span class='btn btn-info btn-sm'>{$count}</span>";
-            }
-            $result .= "<div class='alert alert-info'><strong>回调地址</strong> {$systemurl}/modules/addons/QQ_Connect/oauth/callback.php</div>";
-            $result .= "<div class=\"panel panel-default\">
-        <div class=\"panel-heading\">
-            数据列表
-        </div>
-        {$editor}
-        <table class=\"table\">
-            <thead>
-            <tr>
-                <th>模块名称</th>
-                <th>绑定数量</th>
-                <th>按钮信息</th>
-            </tr>
-            </thead>
-            <tbody>
-        <tr>
-            <td>QQ Connect</td>
-            <td>
-                {$count}
-            </td>
-            <td>
-                <form action=\"{$modulelink}\" method=\"post\">
-                    <input type=\"hidden\" name=\"action\" value=\"edit\">
-                    <button type=\"submit\" class=\"btn btn-primary btn-xs\">
-                        <span class=\"glyphicon glyphicon-edit\" aria-hidden=\"true\"></span> 编辑按钮样式
-                    </button>
-                </form>
-            </td>
-        </tr>
-            </tbody>
-        </table>
-    </div>";
+            	breeak;
+            case 'edit':
+            	$setting = Capsule::table('mod_qqsetting')->first();
+                if ( $setting ) {
+                    $login 	= $setting->login;
+                    $logins = $setting->logins;
+                    $logout = $setting->logout;
+                }
+                $editor = '
+<div class="panel-body">
+    <form action="'.$modulelink.'" method="post">
+      <input type="hidden" name="action" value="submitedit">
+      <div class="form-group">
+        <label>登录页按钮</label>
+        <textarea class="form-control" rows="3" name="login">'.$login.'</textarea>
+      </div>
+      <div class="form-group">
+        <label>客户中心绑定按钮</label>
+        <textarea class="form-control" rows="3" name="logins">'.$logins.'</textarea>
+      </div>
+      <div class="form-group">
+        <label>客户中心解除绑定</label>
+        <textarea class="form-control" rows="3" name="logout">'.$logout.'</textarea>
+      </div>
+        <button type="submit" class="btn btn-primary">提交修改</button>
+    </form>
+</div>';
+                break;
+            case 'submitedit':
+                if (empty($_POST['login']) || empty($_POST['logins']) || empty($_POST['logout'])) {
+	                
+                    $alert = error("修改按钮样式失败，不允许修改值为空。");
+                    
+                } else {
+	                
+                    $login = html_entity_decode($_POST['login']);
+                    $logins = html_entity_decode($_POST['logins']);
+                    $logout = html_entity_decode($_POST['logout']);
 
-    echo $result;
+                    $action = Capsule::table('mod_qqsetting')
+                            ->update([
+                            	'login'		=> $login,
+                            	'logins' 	=> $logins,
+                            	'logout'	=> $logout,
+                            ]);
+                    if ( $action ) {
+                        $alert = success('<p>修改按钮样式成功，请在模板文件 clientareahome.tpl 和 login.tpl 中合适的地方加入 </p>
+                        	<p>{$qqlink} 是登录按钮，绑定按钮，解绑按钮，一个按钮多用。</p>
+                        	<p>{$avatar} 是头像，{$nickname} 是昵称，例如</p>
+                        	<code>{if $avatar}
+&lt;span class="avatars"&gt;
+&lt;img src="{$avatar}" alt="{$nickname}" /&gt;
+{/if}
+</code>');
+                    } else {
+                        $alert = error('按钮样式没有修改。');
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    $count = Capsule::table('mod_qqconnect')->count();
+    if ($count == 0) {
+        $count = '暂无记录';
+    } else {
+        $count = "<span class='btn btn-info btn-sm'>{$count}</span>";
+    }
+    $setting = Capsule::table('mod_qqsetting')->first();
+    if ( !$setting ) {
+	     $button = '<a href="'.$modulelink.'&action=init" class="btn btn-xs btn-default">初始化按钮</a>';
+    } else {
+	     $button = '<a href="'.$modulelink.'&action=edit" class="btn btn-xs btn-default">编辑按钮样式</a>';
+    }
+    $header = '<div class="alert alert-info"><strong>回调地址</strong> '.$systemurl.'/modules/addons/QQ_Connect/oauth/callback.php</div><div class="panel panel-default">';
+    if ( $editor ) {
+		$result .= '<div class="panel-heading">编辑按钮信息</div>'.$editor;
+	} else {
+		$result .= '<table class="table">
+		    <thead>
+			    <tr>
+			        <th>模块名称</th>
+			        <th>绑定数量</th>
+			        <th>按钮信息</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+				<tr>
+				    <td>QQ Connect</td>
+				    <td>
+				        '.$count.'
+				    </td>
+				    <td>
+				        '.$button.'
+				    </td>
+				</tr>
+		    </tbody>
+		</table>';
+	}
+	$footer = '</div>';
+
+    echo $alert.$header.$result.$footer;
 }
     function error($str) {
-        return "<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\"><ul style=\"padding: 0px;\">{$str}</ul></div>";
+        return "<div class=\"alert alert-danger alert-dismissible fade in\" role=\"alert\">{$str}</div>";
     }
 
     function success($str) {
-        return "<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\"><ul style=\"padding: 0px;\">{$str}</ul></div>";
+        return "<div class=\"alert alert-success alert-dismissible fade in\" role=\"alert\">{$str}</div>";
     }
