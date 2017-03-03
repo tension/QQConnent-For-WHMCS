@@ -93,7 +93,14 @@ function QQ_Connect_output($vars) {
 		            	'logout'	=> "&lt;a href=\"javascript:if(confirm('您确定取消 QQ 账号绑定吗？'))QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 解绑QQ&lt;/a&gt;",
 		            ]);
 		        if ( $action ) {
-                    $alert = success('初始化成功');
+                        $alert = success('<p>初始化按钮样式成功，请在模板文件 clientareahome.tpl 和 login.tpl 中合适的地方加入 </p>
+                        	<p>{$qqlink} 是登录按钮，绑定按钮，解绑按钮，一个按钮多用。</p>
+                        	<p>{$avatar} 是头像，{$nickname} 是昵称，例如</p>
+                        	<code style="margin-top: 10px;">{if $avatar}
+&lt;span class="avatars"&gt;
+&lt;img src="{$avatar}" alt="{$nickname}" /&gt;
+{/if}
+</code>');
                 } else {
                     $alert = error('初始化失败');
                 }
