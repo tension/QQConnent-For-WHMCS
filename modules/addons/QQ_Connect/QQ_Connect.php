@@ -1,5 +1,5 @@
 <?php
-use \Illuminate\Database\Capsule\Manager as Capsule;
+use WHMCS\Database\Capsule;
 
 function QQ_Connect_config() {
 	$configarray = array(
@@ -7,42 +7,55 @@ function QQ_Connect_config() {
 		'description' 	=> 'This module allows your customers to use QQ account login WHMCS.',
 		'version' 		=> '1.3',
 		'author' 		=> '<a href="http://neworld.org" target="_blank">NeWorld</a>',
-		'fields' 		=> array()
+		'fields' 		=> []
 	);
 	
-	$configarray['fields']['qq_appid'] = array(
+	$configarray['fields']['qq_appid'] = [
 		'FriendlyName' 	=> 'APP ID',
 		'Type' 			=> 'text',
 		'Size' 			=> '25',
 		'Description' 		=> '请输入 APP ID，请前往 <a href="http://connect.qq.com" target="_blank">QQ互联</a> 申请'
-	);
+	];
 
-	$configarray['fields']['qq_appkey'] = array(
+	$configarray['fields']['qq_appkey'] = [
         "FriendlyName" 	=> "APP Key",
         "Type" 			=> "text",
         "Size" 			=> "25",
         "Description" 	=> "请输入 APPKEY",
-	);
+	];
 	
 	return $configarray;
 }
 
 function QQ_Connect_activate() {
 	try {
-		if (!\Illuminate\Database\Capsule\Manager::schema()->hasTable('mod_qqconnect')) {
-			\Illuminate\Database\Capsule\Manager::schema()->create('mod_qqconnect', function ($table) {
+		if (!Capsule::schema()->hasTable('mod_qqconnect')) {
+			Capsule::schema()->create('mod_qqconnect', function ($table) {
 				$table->increments('uid');
 				$table->text('openid');
 				$table->text('nickname');
 				$table->text('avatar');
 			});
 		}
-		if (!\Illuminate\Database\Capsule\Manager::schema()->hasTable('mod_qqsetting')) {
-			\Illuminate\Database\Capsule\Manager::schema()->create('mod_qqsetting', function ($table) {
+		if (!Capsule::schema()->hasTable('mod_qqsetting')) {
+			Capsule::schema()->create('mod_qqsetting', function ($table) {
 				$table->text('login');
 				$table->text('logins');
 				$table->text('logout');
-			});
+			});             
+			    
+            $login = "&lt;a href=\"javascript:QQ_login('login');\" class=\"btn btn-block btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; QQ&lt;/a&gt;";
+            
+            $logins = "&lt;a href=\"javascript:QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 绑定QQ&lt;/a&gt;";
+            
+            $logout = "&lt;a href=\"javascript:if(confirm('您确定取消 QQ 账号绑定吗？'))QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 解绑QQ&lt;/a&gt;";
+            
+	        Capsule::table('mod_qqsetting')
+	            ->insert([
+	            	'login'		=> $login,
+	            	'logins' 	=> $logins,
+	            	'logout'	=> $logout,
+	            ]);
 		}
 	} catch (Exception $e) {
 		return [
@@ -85,13 +98,7 @@ function QQ_Connect_output($vars) {
                 switch ($_POST['action']) {
                     case 'edit':
                     	$setting = Capsule::table('mod_qqsetting')->first();
-                        if ($setting == 0) {
-                            $login = "&lt;a href=\"javascript:QQ_login('login');\" class=\"btn btn-block btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; QQ&lt;/a&gt;";
-                            
-                            $logins = "&lt;a href=\"javascript:QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 绑定QQ&lt;/a&gt;";
-                            
-                            $logout = "&lt;a href=\"javascript:if(confirm('您确定取消 QQ 账号绑定吗？'))QQ_login('bind');\" class=\"btn btn-sm btn-qq\"&gt;&lt;i class=\"fa fa-qq\"&gt;&lt;/i&gt; 解绑QQ&lt;/a&gt;";
-                        } else {
+                        if ( $setting ) {
                             $login 	= $setting->login;
                             $logins = $setting->logins;
                             $logout = $setting->logout;
@@ -127,34 +134,22 @@ function QQ_Connect_output($vars) {
                                 $login = html_entity_decode($_POST['login']);
                                 $logins = html_entity_decode($_POST['logins']);
                                 $logout = html_entity_decode($_POST['logout']);
-                                
-								$check = Capsule::table('mod_qqsetting')->first();
 
-                                if ($check) {
-	                                $action = Capsule::table('mod_qqsetting')
-	                                ->insert([
-	                                	'login'		=> $login,
-	                                	'logins' 	=> $logins,
-	                                	'logout'	=> $logout,
-	                                ]);
-                                } else {
-	                                
-	                                $action = Capsule::table('mod_qqsetting')
-	                                ->update([
-	                                	'login'		=> $login,
-	                                	'logins' 	=> $logins,
-	                                	'logout'	=> $logout,
-	                                ]);
-                                }
+                                $action = Capsule::table('mod_qqsetting')
+		                                ->update([
+		                                	'login'		=> $login,
+		                                	'logins' 	=> $logins,
+		                                	'logout'	=> $logout,
+		                                ]);
 
                                 if ($action) {
                                     $result .= success('修改按钮样式成功，请在模板文件 clientareahome.tpl 和 login.tpl 中合适的地方加入 <strong>{$qqlink}</strong>');
                                 } else {
-                                    $result .= error("数据库操作故障，这可能是由于按钮样式并未更改或修改失败，若修改失败、请重试。");
+                                    $result .= error('数据库操作故障，这可能是由于按钮样式并未更改或修改失败，若修改失败、请重试。');
                                 }
                             }
                         } else {
-                            $result .= error("修改按钮样式失败，请重新提交尝试。");
+                            $result .= error('修改按钮样式失败，请重新提交尝试。');
                         }
                         break;
                     default:
