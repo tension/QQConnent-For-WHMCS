@@ -146,7 +146,7 @@ function QQ_Connect_output($vars) {
                         $alert = success('<p>修改按钮样式成功，请在模板文件 clientareahome.tpl 和 login.tpl 中合适的地方加入 </p>
                         	<p>{$qqlink} 是登录按钮，绑定按钮，解绑按钮，一个按钮多用。</p>
                         	<p>{$avatar} 是头像，{$nickname} 是昵称，例如</p>
-                        	<code>{if $avatar}
+                        	<code style="margin-top: 10px;">{if $avatar}
 &lt;span class="avatars"&gt;
 &lt;img src="{$avatar}" alt="{$nickname}" /&gt;
 {/if}
