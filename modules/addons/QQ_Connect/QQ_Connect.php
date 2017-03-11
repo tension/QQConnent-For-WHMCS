@@ -81,7 +81,7 @@ function QQ_Connect_output($vars) {
 	$db = new NeWorld\Database;
     $systemurl = \WHMCS\Config\Setting::getValue('SystemURL');
     $modulelink = $vars['modulelink'];
-    $result = '<link rel="stylesheet" href="'.$systemurl.'/modules/addons/QQ_Connect/style.css">';
+    $result = '<link rel="stylesheet" href="'.$systemurl.'/modules/addons/QQ_Connect/style.css?v3">';
     
     if (isset($_REQUEST['action'])) {
         switch ($_REQUEST['action']) {
@@ -163,6 +163,25 @@ function QQ_Connect_output($vars) {
                     }
                 }
                 break;
+            case 'count':
+                $qqconnect = Capsule::table('mod_qqconnect')->orderBy('uid','ASC')->get();
+                //print_r($qqconnect);die();
+                foreach ($qqconnect as $key => $value) {
+	                $getName = Capsule::table('tblclients')->where('id', $value->uid)->first();
+	                $qqinfo[$key]['name']		= $getName->firstname . ' ' . $getName->lastname;
+					$qqinfo[$key]['id'] 		= $value->uid;
+					$qqinfo[$key]['openid'] 	= $value->openid;
+					$qqinfo[$key]['avatar'] 	= $value->avatar;
+					$qqinfo[$key]['nickname'] 	= $value->nickname;
+                	$qqlist .= "<tr>
+					    <td>{$qqinfo[$key]['id']}</td>
+					    <td><a href='clientssummary.php?userid={$qqinfo[$key]['id']}'>{$qqinfo[$key]['name']}</a></td>
+					    <td>{$qqinfo[$key]['openid']}</td>
+					    <td>{$qqinfo[$key]['nickname']}</td>
+					    <td><img src='{$qqinfo[$key]['avatar']}' style='width: 36px;' /></td>
+					</tr>";
+				}
+                break;
             default:
                 break;
         }
@@ -171,17 +190,36 @@ function QQ_Connect_output($vars) {
     if ($count == 0) {
         $count = '暂无记录';
     } else {
-        $count = "<span class='btn btn-info btn-sm'>{$count}</span>";
+        $count = '<a href="'.$modulelink.'&action=count" class="btn btn-info btn-xs">'.$count.'</a>';
     }
+    
     $setting = Capsule::table('mod_qqsetting')->first();
     if ( !$setting ) {
 	     $button = '<a href="'.$modulelink.'&action=init" class="btn btn-xs btn-default">初始化按钮</a>';
     } else {
 	     $button = '<a href="'.$modulelink.'&action=edit" class="btn btn-xs btn-default">编辑按钮样式</a>';
     }
-    $header = '<div class="alert alert-info"><strong>回调地址</strong> '.$systemurl.'/modules/addons/QQ_Connect/oauth/callback.php</div><div class="panel panel-default">';
+    
+    $header = '<div class="alert alert-info"><strong>回调地址</strong> '.$systemurl.'/modules/addons/QQ_Connect/oauth/callback.php</div>
+    	<a href="'.$modulelink.'" class="btn btn-default btn-xs" style="margin-bottom: 20px;"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> 返回</a>
+    <div class="panel panel-default">';
     if ( $editor ) {
 		$result .= '<div class="panel-heading">编辑按钮信息</div>'.$editor;
+	} elseif ( $qqlist ) {
+		$result .= '<table class="table">
+		    <thead>
+			    <tr>
+			        <th>UID</th>
+			        <th>用户名</th>
+			        <th>OPENID</th>
+			        <th>QQ昵称</th>
+			        <th>QQ头像</th>
+			    </tr>
+		    </thead>
+		    <tbody>
+		    '.$qqlist.'
+		    </tbody>
+		</table>';
 	} else {
 		$result .= '<table class="table">
 		    <thead>
