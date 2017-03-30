@@ -59,18 +59,10 @@ function QQ_Connect_activate() {
 }
 
 function QQ_Connect_deactivate() {
-	$delete = \Illuminate\Database\Capsule\Manager::table('tbladdonmodules')->where('module', 'QQ_Connect')->where('setting', 'delete')->first();
-	if ($delete->value) {
-		try {
-			\Illuminate\Database\Capsule\Manager::schema()->dropIfExists('mod_qqconnect');
-			\Illuminate\Database\Capsule\Manager::schema()->dropIfExists('mod_qqsetting');
-		} catch (Exception $e) {
-			return [
-				'status' => 'error',
-				'description' => 'Unable to drop tables: ' . $e->getMessage()
-			];
-		}
-	}
+
+	Capsule::schema()->dropIfExists('mod_qqconnect');
+	Capsule::schema()->dropIfExists('mod_qqsetting');
+	
 	return [
 		'status' => 'success',
 		'description' => '模块卸载成功'
@@ -78,7 +70,6 @@ function QQ_Connect_deactivate() {
 }
 
 function QQ_Connect_output($vars) {
-	$db = new NeWorld\Database;
     $systemurl = \WHMCS\Config\Setting::getValue('SystemURL');
     $modulelink = $vars['modulelink'];
     $result = '<link rel="stylesheet" href="'.$systemurl.'/modules/addons/QQ_Connect/style.css?v3">';
