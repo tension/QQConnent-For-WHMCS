@@ -41,8 +41,8 @@ if ( $openID ) {
     $_SESSION['uid'] = $uid;
 	
 	// 获取 UID
-	
 	$userinfo 	= Capsule::table('tblclients')->where('id', $uid)->first();
+	$username 	= $userinfo->firstname . ' ' . $userinfo->lastname;
 	
 	// 取出值
 	$login_uid 	= $userinfo->id;
@@ -52,18 +52,31 @@ if ( $openID ) {
 	// 更新登录时间登录IP
 	$fullhost = gethostbyaddr($remote_ip);
 	Capsule::table('tblclients')->where('id', $login_uid)->update([
-		'lastlogin' 	=> date('Y-m-d H:i:s'),
+		'lastlogin' 	=> now(),
 		'ip'			=> $remote_ip,
 		'host'			=> $fullhost,
 	]);
+	$_SESSION['uid'] = $login_uid;
+	if ($login_cid) {
+		$_SESSION['cid'] = $login_cid;
+	}
     $haship = $CONFIG['DisableSessionIPCheck'] ? '' : \WHMCS\Utility\Environment\CurrentUser::getIP();
-	// 写入登录数据
-    $_SESSION['upw'] = sha1($login_uid . $login_pwd . $haship . substr(sha1($cc_encryption_hash),0,20));
+    $whmcsVersion = \WHMCS\Config\Setting::getValue('Version');
+    $Version = strpos($whmcsVersion,'7.3.0');
+	// 写入登录数据 判断是否版本大于 7.3.0
+	if ( $Version == '0' ) {
+    	$_SESSION['upw'] = \WHMCS\Authentication\Client::generateClientLoginHash($login_uid, $login_cid, $login_pwd);
+	} else {
+    	$_SESSION['upw'] = sha1($login_uid . $login_pwd . $haship . substr(sha1($cc_encryption_hash),0,20));
+	}
 	$_SESSION['tkval'] = genRandomVal();
 	if ($language) {
 		$_SESSION['Language'] = $language;
 	}
-	run_hook('ClientLogin', array('userid' => $login_uid));
+	$hookParams = array('userid' => $login_uid);
+	$hookParams['contactid'] = $login_cid ? $login_cid : 0;
+	run_hook('ClientLogin', $hookParams);
+	logActivity( $username . ' - 通过 QQ扫码 登录' );
 	$loginsuccess = true;
     
     //提示
